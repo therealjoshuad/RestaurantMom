@@ -74,8 +74,8 @@ The image is built by Fly's remote builder from the `Dockerfile` (Next.js standa
 output). `.dockerignore` excludes `.env*`, so secrets are never baked into the image.
 Rotate a secret later with `fly secrets set NAME=value`, which restarts the machine.
 
-`fly.toml` lets the machine stop when idle, so the first request after a quiet spell is
-slow. Set `min_machines_running = 1` to keep it warm.
+`fly.toml` keeps one machine running (`min_machines_running = 1`) so there are no cold
+starts. Set it to `0` to let the machine stop when idle and save money.
 
 ## Starter prompts / smoke tests (in the chat)
 1. "I'm at Harrison Street Deli" -> warns off the French dip, pushes the pastrami
@@ -88,7 +88,10 @@ Test 3 writes a real row to your database.
 Demo data uses fictional restaurant names on purpose.
 
 ## Known gaps
-- Login is one shared password with a small delay on wrong guesses, not real rate limiting.
+- Login is one shared password. Rate limiting is in-memory and per client IP
+  (`src/lib/rate-limit.ts`): 10 login attempts per 15 minutes, and 20 chat requests per
+  minute / 200 per hour. Limits reset on restart and are not shared across machines, so
+  swap in Redis or Postgres if you scale past one machine.
 - Mastra runs with in-memory storage for its own state. Dish history lives in Neon, so
   this only matters if you add agent memory.
 - Chat history in the UI is not persisted across page refreshes.

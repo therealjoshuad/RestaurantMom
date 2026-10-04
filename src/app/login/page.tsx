@@ -20,7 +20,11 @@ export default function LoginPage() {
       window.location.href = '/'
       return
     }
-    setError('Wrong password, sweetie.')
+    setError(
+      res.status === 429
+        ? 'Too many tries. Wait a bit and try again.'
+        : 'Wrong password, sweetie.',
+    )
     setBusy(false)
   }
 

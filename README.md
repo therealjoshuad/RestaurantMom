@@ -89,7 +89,8 @@ starts. Set it to `0` to let the machine stop when idle and save money.
 1. "I'm at Harrison Street Deli" -> warns off the French dip, pushes the pastrami
 2. "Thinking about a French dip at Golden Gate Grill" -> calls out the pattern
 3. "Just had the shrimp po' boy at Bayou on Valencia, solid 3, bread was a little soggy" -> logs it
-4. "I'm going to <real SF place>" -> Exa research + taste-based pick
+4. "I'm going to <real SF place>" -> Exa research + taste-based pick, citing similar dishes you've had elsewhere
+5. "I'm craving something crispy and spicy" -> 2-3 options from your own history across restaurants
 
 Test 3 writes a real row to your database.
 

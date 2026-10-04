@@ -55,3 +55,13 @@ INSERT INTO dishes (restaurant_id, dish, rating, would_order_again, note, tags, 
      'Not real Leidenheimer-style bread, too soft. Remoulade bland.', '{soggy,bland}', '2026-09-05'),
   ((SELECT id FROM restaurants WHERE name='Bayou on Valencia'), 'Gumbo', 4, true,
      'Dark roux, good andouille. Close to home.', '{smoky,hearty}', '2026-09-05');
+
+-- ---------------------------------------------------------------
+-- Chat persistence: the one ongoing conversation, stored as an AI SDK
+-- UIMessage[] in a single row. Safe to run on an existing database.
+-- ---------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS chat_state (
+  id         text PRIMARY KEY DEFAULT 'main',
+  messages   jsonb NOT NULL DEFAULT '[]',
+  updated_at timestamptz DEFAULT now()
+);

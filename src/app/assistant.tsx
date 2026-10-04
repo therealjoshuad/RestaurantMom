@@ -1,13 +1,42 @@
 "use client";
 
 import { AssistantRuntimeProvider, Suggestions, useAui } from "@assistant-ui/react";
-import { useChatRuntime, AssistantChatTransport } from "@assistant-ui/ai-sdk";
+import { useChatRuntime, useAISDKChat, AssistantChatTransport } from "@assistant-ui/ai-sdk";
+import { useEffect, useRef } from "react";
+import type { UIMessage } from "ai";
 import { lastAssistantMessageIsCompleteWithToolCalls } from "ai";
 import { Thread } from "@/components/assistant-ui/elements/thread.aui";
 
-export const Assistant = () => {
+async function startNewChat() {
+  await fetch("/api/history", { method: "DELETE" });
+  window.location.reload();
+}
+
+// Saves the whole conversation each time a reply finishes streaming.
+function PersistChat() {
+  const chat = useAISDKChat();
+  const status = chat?.status;
+  const messages = chat?.messages;
+  const previous = useRef(status);
+
+  useEffect(() => {
+    const wasBusy = previous.current === "submitted" || previous.current === "streaming";
+    previous.current = status;
+    if (!wasBusy || status === "submitted" || status === "streaming" || !messages?.length) return;
+    fetch("/api/history", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ messages }),
+    }).catch(() => {});
+  }, [status, messages]);
+
+  return null;
+}
+
+export const Assistant = ({ initialMessages }: { initialMessages: UIMessage[] }) => {
   const runtime = useChatRuntime({
     sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
+    messages: initialMessages,
     transport: new AssistantChatTransport({
       api: "/api/chat",
     }),
@@ -40,6 +69,7 @@ export const Assistant = () => {
 
   return (
     <AssistantRuntimeProvider runtime={runtime} aui={aui}>
+      <PersistChat />
       <div className="flex h-dvh flex-col">
         <header className="shrink-0">
           <div className="awning" aria-hidden />
@@ -47,8 +77,17 @@ export const Assistant = () => {
             <span className="font-display text-xl font-semibold tracking-tight">
               Restaurant<span className="text-primary">Mom</span>
             </span>
-            <span className="text-muted-foreground hidden text-sm italic sm:inline">
-              she remembers every dish
+            <span className="flex items-baseline gap-4">
+              <span className="text-muted-foreground hidden text-sm italic sm:inline">
+                she remembers every dish
+              </span>
+              <button
+                type="button"
+                onClick={startNewChat}
+                className="text-primary hover:text-[var(--tomato-deep)] text-sm font-semibold underline-offset-4 hover:underline"
+              >
+                New chat
+              </button>
             </span>
           </div>
         </header>

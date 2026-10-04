@@ -4,7 +4,7 @@ import { mastra } from '@/mastra'
 
 // Must match the MAJOR version of the "ai" package in package.json
 // (check with `npm ls ai`): 'ai@6.x' -> 'v6', 'ai@7.x' -> 'v7'.
-const AI_SDK_STREAM_VERSION = 'v6' as const
+const AI_SDK_STREAM_VERSION = 'v7' as const
 
 export async function POST(req: Request) {
   const params = await req.json()

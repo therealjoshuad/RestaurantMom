@@ -41,8 +41,12 @@ export const restaurantMom = new Agent({
   id: 'restaurant-mom',
   name: 'RestaurantMom',
   instructions,
-  // Set MODEL to a Mastra model string. To route through the Neon AI Gateway,
-  // follow Neon's gateway docs for the base URL/key (ask at the Neon table).
-  model: process.env.MODEL ?? 'anthropic/claude-sonnet-4-5',
+  // Routed through the Neon AI Gateway (unified OpenAI-compatible /v1 endpoint).
+  // MODEL is the gateway's model id, with no provider prefix (e.g. claude-sonnet-4-6).
+  model: {
+    id: `openai/${process.env.MODEL ?? 'claude-sonnet-4-6'}`,
+    url: `${process.env.NEON_AI_GATEWAY_BASE_URL}/v1`,
+    apiKey: process.env.NEON_AI_GATEWAY_TOKEN,
+  },
   tools,
 })

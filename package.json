@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "db:schema": "node --env-file=.env.local scripts/db.mjs schema",
+    "db:seed": "node --env-file=.env.local scripts/db.mjs seed",
+    "db:reset": "node --env-file=.env.local scripts/db.mjs reset"
   },
   "dependencies": {
     "@ai-sdk/openai": "^4.0.83",

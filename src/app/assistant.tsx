@@ -2,6 +2,7 @@
 
 import { AssistantRuntimeProvider, Suggestions, useAui } from "@assistant-ui/react";
 import { useChatRuntime, useAISDKChat, AssistantChatTransport } from "@assistant-ui/ai-sdk";
+import Link from "next/link";
 import { useEffect, useRef } from "react";
 import type { UIMessage } from "ai";
 import { lastAssistantMessageIsCompleteWithToolCalls } from "ai";
@@ -81,6 +82,12 @@ export const Assistant = ({ initialMessages }: { initialMessages: UIMessage[] })
               <span className="text-muted-foreground hidden text-sm italic sm:inline">
                 she remembers every dish
               </span>
+              <Link
+                href="/profile"
+                className="text-primary hover:text-[var(--tomato-deep)] text-sm font-semibold underline-offset-4 hover:underline"
+              >
+                Taste profile
+              </Link>
               <button
                 type="button"
                 onClick={startNewChat}
